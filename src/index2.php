@@ -12,7 +12,7 @@
  
  <body>
  	<h1>PDO vulnerable a SQL injection</h1>
-
+ 
  	<?php
  		// sql injection possible:
  		// coses'); drop table test;'select 
@@ -29,8 +29,10 @@
 			$username = $_POST["user"];
 			$pass = $_POST["password"];
 			# (2.1) creem el string de la consulta (query)
-			$qstr = "SELECT * FROM users WHERE name='$username' AND password=SHA2('$pass',512);";
+			$qstr = "SELECT * FROM users WHERE name=? AND password=SHA2(?,512);";
 			$consulta = $pdo->prepare($qstr);
+            $consulta->bindParam(1, $username);
+            $consulta->bindParam(2, $pass);
 
 			# mostrem la SQL query per veure el què s'executarà (a mode debug)
 			echo "<br>$qstr<br>";
@@ -53,7 +55,7 @@
 				echo "<div class='user'>No hi ha cap usuari amb aquest nom o contrasenya.</div>";
 		}
  	?>
-
+ 	
  	<fieldset>
  	<legend>Login form</legend>
   	<form method="post">
